@@ -1,0 +1,14 @@
+# Created by Octave 3.4.0, Sun Aug 18 14:48:39 2013 PDT <rb@maclocalnet.local>
+# name: A
+# type: sparse matrix
+# nnz: 6
+# rows: 10
+# columns: 10
+1 1 5
+2 3 10
+1 4 10
+2 5 10
+7 5 9
+3 9 10
+
+

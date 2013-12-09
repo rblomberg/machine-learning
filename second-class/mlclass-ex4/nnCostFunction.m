@@ -70,42 +70,47 @@ for i = 1:m
   Y(i,:) = tmp';
 end
 
-h = sigmoid([ones(size(X,1),1) sigmoid([ones(size(X,1),1) X] * Theta1')] * Theta2' );
+a1 = [ones(m,1), X];
+a2 = sigmoid(Theta1 * a1');
+a2 = [ones(1,size(a2,2)); a2];
+h = sigmoid(Theta2 * a2);;
 
-for i = 1:size(y)
+Theta2NoBias = Theta2(:,2:end);
+Theta1NoBias = Theta1(:,2:end);
 
-  cost = ( (-1 .* Y(i,:)) * log(h(i,:))') .- ((1 .- Y(i,:)) * log(1 .- h(i,:))');
-  J = J + cost;
+cost = (-Y .* log(h)') - ( (1-Y) .* log(1-h)');
+regularization = (lambda / (2*m)) * (sumsq(Theta1NoBias(:)) + sumsq(Theta2NoBias(:)));
+J = (1/m) * sum(cost(:)) + regularization;
 
+D2 = 0;
+D1 = 0;
+for i = 1:m
 
-  a1 = [1 X(i,:)];
-  a2 = sigmoid(a1 * Theta1');
-  a3 = sigmoid([1 a2] * Theta2');
-  answer = Y(i,:);
+  a1 = [1; X(i,:)'];
+  z2 = Theta1 * a1;
+  a2 = [1; sigmoid(z2)];
+  z3 = Theta2 * a2;
+  a3 = sigmoid(z3);
 
-  size(a1)
-  size(a2)
-  size(a3)
-  size(Theta1)
-  size(Theta2)
+  thisY = Y(i,:)';
 
-  d3 = a3 .- answer
-  d2 = (d3 * Theta2) .* [1 (a2 .* (1 .- a2))]
+  d3 = a3 - thisY;
+  d2 = (Theta2NoBias' * d3) .* sigmoidGradient(z2);
 
-  Theta1_grad(
+  D2 = D2 + (d3 * a2');
+  D1 = D1 + (d2 * a1');
 
 end
 
-J = ( (1/size(X,1)) * J ) +  ( (lambda / (2 * m)) * (sum(sum(Theta1(:,2:end) .^ 2)) + sum(sum( Theta2(:,2:end) .^ 2 ))));
-
-
-
-% -------------------------------------------------------------
-
 % =========================================================================
+
+Theta2_grad = (1/m) * D2; % add all terms first
+Theta1_grad = (1/m) * D1; % add all terms first
+
+Theta2_grad(:,2:end) = Theta2_grad(:,2:end) + ((lambda / m) * Theta2(:,2:end)); % no overwrite them with regularized
+Theta1_grad(:,2:end) = Theta1_grad(:,2:end) + ((lambda / m) * Theta1(:,2:end)); % no overwrite them with regularized
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
-
 
 end

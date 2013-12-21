@@ -21,11 +21,11 @@ idx = zeros(size(X,1), 1);
 % Note: You can use a for-loop over the examples to compute this.
 %
 
-
-
-
-
-
+for i = 1:size(X,1)
+  distances = sqrt(sum(( centroids .- (ones(K,1) * X(i,:))) .^ 2,2));
+  [minimum,index] = min(distances);
+  idx(i) = index;
+end
 
 % =============================================================
 

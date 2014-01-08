@@ -182,7 +182,7 @@ R = [(my_ratings ~= 0) R];
 %  Useful Values
 num_users = size(Y, 2);
 num_movies = size(Y, 1);
-num_features = 10;
+num_features = 100;
 
 % Set Initial Parameters (Theta, X)
 X = randn(num_movies, num_features);
